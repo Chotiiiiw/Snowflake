@@ -6,3 +6,4 @@ logs/
 dbt_packages/
 .DS_Store
 mysecret.txt
+.vscode
