@@ -38,9 +38,14 @@ cleaned as (
         try_cast(
             nullif(trim(quantity), '') as integer
         ) as quantity,
-
         try_cast(
-            nullif(trim(unit_price), '') as decimal(12, 2)
+            case
+            when nullif(trim(unit_price), '') is null
+                then null
+            when lower(trim(unit_price)) = 'free'
+                then '0.00'
+            else trim(unit_price)
+        end as decimal(12, 2)
         ) as unit_price,
 
         try_cast(

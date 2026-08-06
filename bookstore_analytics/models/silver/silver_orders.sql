@@ -47,7 +47,7 @@ cleaned as (
         cast(
             case
                 when payment_method is null then null 
-                when trim(lower(order_status)) in ('credit_card', 'credit card') then 'credit_card'
+                when trim(lower(payment_method)) in ('credit_card', 'credit card') then 'credit_card'
                 else trim(lower(payment_method)) 
             end as varchar(50)
         ) as payment_method,

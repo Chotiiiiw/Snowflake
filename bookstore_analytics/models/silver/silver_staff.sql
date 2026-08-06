@@ -51,7 +51,11 @@ cleaned as (
             nullif(trim(last_name), '') as varchar(100)
         ) as last_name,
         cast(
-            concat(first_name, last_name) as varchar(200)
+            concat_ws(
+                    ' ',
+                    nullif(trim(first_name), ''),
+                    nullif(trim(last_name), '')
+            ) as varchar(200)
         ) as full_name,
         cast(
             nullif(lower(trim(email)), '') as varchar(255)

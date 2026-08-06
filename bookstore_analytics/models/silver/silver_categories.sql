@@ -62,4 +62,4 @@ deduplicated as (
     ) = 1
 
 )
-select * from cleaned
+select * from deduplicated
