@@ -130,5 +130,51 @@ deduplicated as (
             _loaded_at desc,
             _source_row_number desc
     ) = 1
+),
+
+staff_parent_keys as (
+    select staff_id
+    from deduplicated
+
+    {% if is_incremental() %}
+
+        union
+
+        select staff_id
+        from {{ this }}
+
+    {% endif %}
+),
+
+validated as (
+    select
+        d.*,
+
+        case
+            when d.store_id is null then false
+            when s.store_id is not null then true
+            else false
+        end as is_valid_store_id,
+
+        case
+            when d.manager_staff_id is null then true
+            when m.staff_id is not null then true
+            else false
+        end as is_valid_manager_staff_id
+
+    from deduplicated d
+
+    left join {{ ref('silver_stores') }} s
+        on d.store_id = s.store_id
+
+    left join staff_parent_keys m
+        on d.manager_staff_id = m.staff_id
 )
-select * from deduplicated
+
+select
+    *,
+    (
+        is_valid_store_id
+        and is_valid_manager_staff_id
+    ) as is_valid_record
+from validated

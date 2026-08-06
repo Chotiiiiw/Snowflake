@@ -78,6 +78,37 @@ deduplicated as (
             _loaded_at desc,
             _source_row_number desc
     ) = 1
-)
+),
+validated as (
+    select
+        d.*,
+        case
+            when d.customer_id is null then true
+            when c.customer_id is not null then true
+            else false
+        end as is_valid_customer_id,
 
-select * from deduplicated
+        case
+            when d.store_id is null then false
+            when s.store_id is not null then true
+            else false
+        end as is_valid_store_id,
+
+        case
+            when d.staff_id is null then true
+            when st.staff_id is not null then true
+            else false
+        end as is_valid_staff_id
+    from deduplicated d
+
+    left join {{ ref('silver_customers') }} c
+        on d.customer_id = c.customer_id
+    left join {{ ref('silver_stores') }} s
+        on d.store_id = s.store_id
+    left join {{ ref('silver_staff') }} st
+        on d.staff_id = st.staff_id
+)
+select
+    *,
+    (is_valid_customer_id and is_valid_store_id and is_valid_staff_id) as is_valid_record
+from validated

@@ -91,8 +91,25 @@ deduplicated as (
             _loaded_at desc,
             _source_row_number desc
     ) = 1
+),
 
+validated as (
+    select
+        d.*,
+
+        case
+            when d.publisher_id is null then true
+            when p.publisher_id is not null then true
+            else false
+        end as is_valid_publisher_id
+
+    from deduplicated d
+
+    left join {{ ref('silver_publishers') }} p
+        on d.publisher_id = p.publisher_id
 )
 
-select *
-from deduplicated
+select
+    *,
+    is_valid_publisher_id as is_valid_record
+from validated

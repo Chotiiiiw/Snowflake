@@ -45,5 +45,33 @@ deduplicated as (
             _loaded_at desc,
             _source_row_number desc
     ) = 1
+),
+validated as (
+    select
+        d.*,
+
+        case
+            when d.book_id is null then false
+            when b.book_id is not null then true
+            else false
+        end as is_valid_book_id,
+
+        case
+            when d.category_id is null then false
+            when c.category_id is not null then true
+            else false
+        end as is_valid_category_id
+
+    from deduplicated d
+
+    left join {{ ref('silver_books') }} b
+        on d.book_id = b.book_id
+
+    left join {{ ref('silver_categories') }} c
+        on d.category_id = c.category_id
 )
-select * from deduplicated
+
+select
+    *,
+    (is_valid_book_id and is_valid_category_id) as is_valid_record
+from validated

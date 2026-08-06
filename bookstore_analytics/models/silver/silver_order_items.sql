@@ -76,5 +76,46 @@ deduplicated as (
             _loaded_at desc,
             _source_row_number desc
     ) = 1
+),
+validated as (
+    select
+        d.*,
+
+        case
+            when d.order_id is null then false
+            when o.order_id is not null then true
+            else false
+        end as is_valid_order_id,
+
+        case
+            when d.book_id is null then false
+            when b.book_id is not null then true
+            else false
+        end as is_valid_book_id,
+
+        case
+            when d.promotion_id is null then true
+            when p.promotion_id is not null then true
+            else false
+        end as is_valid_promotion_id
+
+    from deduplicated d
+
+    left join {{ ref('silver_orders') }} o
+        on d.order_id = o.order_id
+
+    left join {{ ref('silver_books') }} b
+        on d.book_id = b.book_id
+
+    left join {{ ref('silver_promotions') }} p
+        on d.promotion_id = p.promotion_id
 )
-select * from deduplicated
+
+select
+    *,
+    (
+        is_valid_order_id
+        and is_valid_book_id
+        and is_valid_promotion_id
+    ) as is_valid_record
+from validated

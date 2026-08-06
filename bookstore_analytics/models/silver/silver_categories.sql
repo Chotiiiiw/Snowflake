@@ -60,6 +60,37 @@ deduplicated as (
             _loaded_at desc,
             _source_row_number desc
     ) = 1
+),
+parent_category_keys as (
+    select category_id
+    from deduplicated
 
+    {% if is_incremental() %}
+
+        union
+
+        select category_id
+        from {{ this }}
+
+    {% endif %}
+),
+validated as (
+    select
+        d.*,
+
+        case
+            when d.parent_category_id is null then true
+            when p.category_id is not null then true
+            else false
+        end as is_valid_parent_category_id
+
+    from deduplicated d
+
+    left join parent_category_keys p
+        on d.parent_category_id = p.category_id
 )
-select * from deduplicated
+
+select
+    *,
+    is_valid_parent_category_id as is_valid_record
+from validated
