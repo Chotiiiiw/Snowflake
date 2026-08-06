@@ -7,3 +7,4 @@ dbt_packages/
 .DS_Store
 mysecret.txt
 .vscode
+snowflake/bronze/schema.sql

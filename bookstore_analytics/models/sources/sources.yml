@@ -1,0 +1,21 @@
+version: 2
+
+sources:
+  - name: bronze
+    database: BOOKSTORES
+    schema: BRONZE
+
+    tables:
+      - name: customers
+      - name: stores
+      - name: staff
+      - name: publishers
+      - name: authors
+      - name: categories
+      - name: promotions
+      - name: books
+      - name: book_authors
+      - name: book_categories
+      - name: orders
+      - name: order_items
+      - name: inventory

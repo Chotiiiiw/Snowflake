@@ -1,0 +1,514 @@
+version: 2
+
+models:
+  - name: silver_customers
+    description: Cleaned and deduplicated customer records
+    columns:
+      - name: customer_id
+        data_type: bigint
+        data_tests:
+          - not_null
+          - unique
+
+      - name: _loaded_at
+        data_type: timestamp_ltz
+        data_tests:
+          - not_null
+
+
+  - name: silver_stores
+    description: Cleaned and deduplicated store records
+    columns:
+      - name: store_id
+        data_type: bigint
+        data_tests:
+          - not_null
+          - unique
+
+      - name: _loaded_at
+        data_type: timestamp_ltz
+        data_tests:
+          - not_null
+
+
+  - name: silver_staff
+    description: Cleaned and deduplicated staff records
+    columns:
+      - name: staff_id
+        data_type: bigint
+        data_tests:
+          - not_null
+          - unique
+
+      - name: store_id
+        data_type: bigint
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('silver_stores')
+                field: store_id
+              config:
+                severity: warn
+
+      - name: manager_staff_id
+        data_type: bigint
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('silver_staff')
+                field: staff_id
+              config:
+                severity: warn
+
+      - name: is_valid_store_id
+        data_type: boolean
+        data_tests:
+          - not_null
+
+      - name: is_valid_manager_staff_id
+        data_type: boolean
+        data_tests:
+          - not_null
+
+      - name: is_valid_record
+        data_type: boolean
+        data_tests:
+          - not_null
+
+      - name: _loaded_at
+        data_type: timestamp_ltz
+        data_tests:
+          - not_null
+
+
+  - name: silver_publishers
+    description: Cleaned and deduplicated publisher records
+    columns:
+      - name: publisher_id
+        data_type: bigint
+        data_tests:
+          - not_null
+          - unique
+
+      - name: _loaded_at
+        data_type: timestamp_ltz
+        data_tests:
+          - not_null
+
+
+  - name: silver_authors
+    description: Cleaned and deduplicated author records
+    columns:
+      - name: author_id
+        data_type: bigint
+        data_tests:
+          - not_null
+          - unique
+
+      - name: _loaded_at
+        data_type: timestamp_ltz
+        data_tests:
+          - not_null
+
+
+  - name: silver_categories
+    description: Cleaned and deduplicated book categories
+    columns:
+      - name: category_id
+        data_type: bigint
+        data_tests:
+          - not_null
+          - unique
+
+      - name: parent_category_id
+        data_type: bigint
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('silver_categories')
+                field: category_id
+              config:
+                severity: warn
+
+      - name: is_valid_parent_category_id
+        data_type: boolean
+        data_tests:
+          - not_null
+
+      - name: is_valid_record
+        data_type: boolean
+        data_tests:
+          - not_null
+
+      - name: _loaded_at
+        data_type: timestamp_ltz
+        data_tests:
+          - not_null
+
+
+  - name: silver_promotions
+    description: Cleaned and deduplicated promotions
+    columns:
+      - name: promotion_id
+        data_type: bigint
+        data_tests:
+          - not_null
+          - unique
+
+      - name: discount_type
+        data_type: varchar(50)
+        data_tests:
+          - accepted_values:
+              arguments:
+                values:
+                  - percentage
+                  - fixed_amount
+
+      - name: discount_value
+        data_type: decimal(12, 2)
+
+      - name: starts_at
+        data_type: timestamp_ntz
+
+      - name: ends_at
+        data_type: timestamp_ntz
+
+      - name: _loaded_at
+        data_type: timestamp_ltz
+        data_tests:
+          - not_null
+
+
+  - name: silver_books
+    description: Cleaned and deduplicated book records
+    columns:
+      - name: book_id
+        data_type: bigint
+        data_tests:
+          - not_null
+          - unique
+
+      - name: publisher_id
+        data_type: bigint
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('silver_publishers')
+                field: publisher_id
+              config:
+                severity: warn
+
+      - name: publication_year
+        data_type: integer
+
+      - name: list_price
+        data_type: decimal(12, 2)
+
+      - name: cost_price
+        data_type: decimal(12, 2)
+
+      - name: is_valid_publisher_id
+        data_type: boolean
+        data_tests:
+          - not_null
+
+      - name: is_valid_record
+        data_type: boolean
+        data_tests:
+          - not_null
+
+      - name: _loaded_at
+        data_type: timestamp_ltz
+        data_tests:
+          - not_null
+
+
+  - name: silver_book_authors
+    description: Bridge table connecting books and authors
+    columns:
+      - name: book_id
+        data_type: bigint
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('silver_books')
+                field: book_id
+              config:
+                severity: warn
+
+      - name: author_id
+        data_type: bigint
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('silver_authors')
+                field: author_id
+              config:
+                severity: warn
+
+      - name: is_valid_book_id
+        data_type: boolean
+        data_tests:
+          - not_null
+
+      - name: is_valid_author_id
+        data_type: boolean
+        data_tests:
+          - not_null
+
+      - name: is_valid_record
+        data_type: boolean
+        data_tests:
+          - not_null
+
+      - name: _loaded_at
+        data_type: timestamp_ltz
+        data_tests:
+          - not_null
+
+
+  - name: silver_book_categories
+    description: Bridge table connecting books and categories
+    columns:
+      - name: book_id
+        data_type: bigint
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('silver_books')
+                field: book_id
+              config:
+                severity: warn
+
+      - name: category_id
+        data_type: bigint
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('silver_categories')
+                field: category_id
+              config:
+                severity: warn
+
+      - name: is_valid_book_id
+        data_type: boolean
+        data_tests:
+          - not_null
+
+      - name: is_valid_category_id
+        data_type: boolean
+        data_tests:
+          - not_null
+
+      - name: is_valid_record
+        data_type: boolean
+        data_tests:
+          - not_null
+
+      - name: _loaded_at
+        data_type: timestamp_ltz
+        data_tests:
+          - not_null
+
+
+  - name: silver_orders
+    description: Cleaned and deduplicated order records
+    columns:
+      - name: order_id
+        data_type: bigint
+        data_tests:
+          - not_null
+          - unique
+
+      - name: customer_id
+        data_type: bigint
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('silver_customers')
+                field: customer_id
+              config:
+                severity: warn
+
+      - name: store_id
+        data_type: bigint
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('silver_stores')
+                field: store_id
+              config:
+                severity: warn
+
+      - name: staff_id
+        data_type: bigint
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('silver_staff')
+                field: staff_id
+              config:
+                severity: warn
+
+      - name: is_valid_customer_id
+        data_type: boolean
+        data_tests:
+          - not_null
+
+      - name: is_valid_store_id
+        data_type: boolean
+        data_tests:
+          - not_null
+
+      - name: is_valid_staff_id
+        data_type: boolean
+        data_tests:
+          - not_null
+
+      - name: is_valid_record
+        data_type: boolean
+        data_tests:
+          - not_null
+
+      - name: _loaded_at
+        data_type: timestamp_ltz
+        data_tests:
+          - not_null
+
+
+  - name: silver_order_items
+    description: Cleaned and deduplicated order line items
+    columns:
+      - name: order_item_id
+        data_type: bigint
+        data_tests:
+          - not_null
+          - unique
+
+      - name: order_id
+        data_type: bigint
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('silver_orders')
+                field: order_id
+              config:
+                severity: warn
+
+      - name: book_id
+        data_type: bigint
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('silver_books')
+                field: book_id
+              config:
+                severity: warn
+
+      - name: promotion_id
+        data_type: bigint
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('silver_promotions')
+                field: promotion_id
+              config:
+                severity: warn
+
+      - name: quantity
+        data_type: integer
+        data_tests:
+          - not_null
+
+      - name: unit_price
+        data_type: decimal(12, 2)
+        data_tests:
+          - not_null
+
+      - name: discount_amount
+        data_type: decimal(12, 2)
+
+      - name: is_valid_order_id
+        data_type: boolean
+        data_tests:
+          - not_null
+
+      - name: is_valid_book_id
+        data_type: boolean
+        data_tests:
+          - not_null
+
+      - name: is_valid_promotion_id
+        data_type: boolean
+        data_tests:
+          - not_null
+
+      - name: is_valid_record
+        data_type: boolean
+        data_tests:
+          - not_null
+
+      - name: _loaded_at
+        data_type: timestamp_ltz
+        data_tests:
+          - not_null
+
+
+  - name: silver_inventory
+    description: Current inventory for each store and book
+    columns:
+      - name: store_id
+        data_type: bigint
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('silver_stores')
+                field: store_id
+              config:
+                severity: warn
+
+      - name: book_id
+        data_type: bigint
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('silver_books')
+                field: book_id
+              config:
+                severity: warn
+
+      - name: quantity_on_hand
+        data_type: integer
+        data_tests:
+          - not_null
+
+      - name: reorder_level
+        data_type: integer
+
+      - name: is_valid_store_id
+        data_type: boolean
+        data_tests:
+          - not_null
+
+      - name: is_valid_book_id
+        data_type: boolean
+        data_tests:
+          - not_null
+
+      - name: is_valid_record
+        data_type: boolean
+        data_tests:
+          - not_null
+
+      - name: _loaded_at
+        data_type: timestamp_ltz
+        data_tests:
+          - not_null
