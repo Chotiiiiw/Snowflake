@@ -205,6 +205,7 @@ models:
         data_type: decimal(12, 2)
 
       - name: cost_price
+        description: Cost of one book unit; records with a missing cost are flagged as invalid
         data_type: decimal(12, 2)
 
       - name: is_valid_publisher_id
@@ -212,10 +213,23 @@ models:
         data_tests:
           - not_null
 
-      - name: is_valid_record
+      - name: is_valid_cost_price
+        description: Indicates whether the book has a non-negative cost price
         data_type: boolean
         data_tests:
           - not_null
+          - accepted_values:
+              arguments:
+                values: [true, false]
+
+      - name: is_valid_record
+        description: Indicates whether the entire book record is valid
+        data_type: boolean
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: [true, false]
 
       - name: _loaded_at
         data_type: timestamp_ltz

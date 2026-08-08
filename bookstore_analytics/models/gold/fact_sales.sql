@@ -16,6 +16,8 @@ books as (
 
     select *
     from {{ ref('dim_books') }}
+    where is_valid_record = true
+      and cost_price is not null
 
 ),
 
