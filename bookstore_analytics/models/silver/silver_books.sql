@@ -101,15 +101,27 @@ validated as (
             when d.publisher_id is null then true
             when p.publisher_id is not null then true
             else false
-        end as is_valid_publisher_id
+        end as is_valid_publisher_id,
+
+        case
+            when d.cost_price is not null
+             and d.cost_price >= 0 then true
+            else false
+        end as is_valid_cost_price
 
     from deduplicated d
 
     left join {{ ref('silver_publishers') }} p
         on d.publisher_id = p.publisher_id
+),
+
+final as (
+    select
+        *,
+        is_valid_publisher_id
+            and is_valid_cost_price as is_valid_record
+    from validated
 )
 
-select
-    *,
-    is_valid_publisher_id as is_valid_record
-from validated
+select *
+from final
