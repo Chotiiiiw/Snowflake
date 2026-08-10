@@ -43,6 +43,7 @@ models:
       - name: store_id
         data_type: bigint
         data_tests:
+          - not_null
           - relationships:
               arguments:
                 to: ref('silver_stores')
@@ -351,6 +352,7 @@ models:
       - name: store_id
         data_type: bigint
         data_tests:
+          - not_null
           - relationships:
               arguments:
                 to: ref('silver_stores')
