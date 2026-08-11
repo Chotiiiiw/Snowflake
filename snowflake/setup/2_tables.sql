@@ -1,5 +1,6 @@
 -- create database;
 use role accountadmin; 
+USE WAREHOUSE bookstore_wh;
 CREATE DATABASE IF NOT EXISTS bookstores;
 USE DATABASE bookstores;
 

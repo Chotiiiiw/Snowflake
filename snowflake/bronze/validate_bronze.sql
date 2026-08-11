@@ -1,3 +1,8 @@
+USE ROLE bookstore_engineer;
+USE WAREHOUSE bookstore_wh;
+USE DATABASE bookstores;
+USE SCHEMA bronze;
+
 -- check 
 SELECT 'stores' AS table_name, COUNT(*) AS row_count FROM stores
 UNION ALL
