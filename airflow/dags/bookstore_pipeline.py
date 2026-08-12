@@ -9,7 +9,7 @@ from airflow.sdk import DAG
 with DAG(
     dag_id="bookstore_pipeline",
     start_date=pendulum.datetime(2026, 1, 1, tz="Asia/Bangkok"),
-    schedule=None,
+    schedule="@daily",
     catchup=False,
     template_searchpath="/opt/airflow/snowflake/bronze",
     tags=["bookstore", "snowflake", "dbt"],
@@ -64,9 +64,5 @@ with DAG(
     )
 
     (
-        load_bronze
-        >> validate_bronze
-        >> build_silver
-        >> run_snapshots
-        >> build_gold
+        load_bronze >> validate_bronze >> build_silver >> run_snapshots >> build_gold
     )
