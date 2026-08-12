@@ -4,8 +4,11 @@ USE WAREHOUSE bookstore_wh;
 USE DATABASE bookstores;
 USE SCHEMA bronze;
 
--- create batch_id
-SET batch_id = (select UUID_STRING());
+-- Use the end of Airflow's daily data interval as the S3 partition date.
+{% set load_date = data_interval_end.in_timezone("Asia/Bangkok").format("YYYY-MM-DD") %}
+
+-- Keep one stable batch ID across retries of the same Airflow DAG run.
+SET batch_id = '{{ run_id }}';
 -- check 
 SELECT $batch_id;
 
@@ -24,7 +27,7 @@ FROM (
         METADATA$FILE_ROW_NUMBER,
         $batch_id,
         CURRENT_TIMESTAMP()
-    FROM @books_stage/stores.csv t
+    FROM @books_stage/load_date={{ load_date }}/stores.csv t
 )
 ON_ERROR = 'ABORT_STATEMENT';
 
@@ -49,7 +52,7 @@ FROM (
         METADATA$FILE_ROW_NUMBER,
         $batch_id,
         CURRENT_TIMESTAMP()
-    FROM @books_stage/staff.csv t
+    FROM @books_stage/load_date={{ load_date }}/staff.csv t
 )
 ON_ERROR = 'ABORT_STATEMENT';
 
@@ -69,7 +72,7 @@ FROM (
         METADATA$FILE_ROW_NUMBER,
         $batch_id,
         CURRENT_TIMESTAMP()
-    FROM @books_stage/customers.csv t
+    FROM @books_stage/load_date={{ load_date }}/customers.csv t
 )
 ON_ERROR = 'ABORT_STATEMENT';
 
@@ -85,7 +88,7 @@ FROM (
         METADATA$FILE_ROW_NUMBER,
         $batch_id,
         CURRENT_TIMESTAMP()
-    FROM @books_stage/publishers.csv t
+    FROM @books_stage/load_date={{ load_date }}/publishers.csv t
 )
 ON_ERROR = 'ABORT_STATEMENT';
 
@@ -101,7 +104,7 @@ FROM (
         METADATA$FILE_ROW_NUMBER,
         $batch_id,
         CURRENT_TIMESTAMP()
-    FROM @books_stage/authors.csv t
+    FROM @books_stage/load_date={{ load_date }}/authors.csv t
 )
 ON_ERROR = 'ABORT_STATEMENT';
 
@@ -117,7 +120,7 @@ FROM (
         METADATA$FILE_ROW_NUMBER,
         $batch_id,
         CURRENT_TIMESTAMP()
-    FROM @books_stage/categories.csv t
+    FROM @books_stage/load_date={{ load_date }}/categories.csv t
 )
 ON_ERROR = 'ABORT_STATEMENT';
 
@@ -136,7 +139,7 @@ FROM (
         METADATA$FILE_ROW_NUMBER,
         $batch_id,
         CURRENT_TIMESTAMP()
-    FROM @books_stage/promotions.csv t
+    FROM @books_stage/load_date={{ load_date }}/promotions.csv t
 )
 ON_ERROR = 'ABORT_STATEMENT';
 
@@ -157,7 +160,7 @@ FROM (
         METADATA$FILE_ROW_NUMBER,
         $batch_id,
         CURRENT_TIMESTAMP()
-    FROM @books_stage/books.csv t
+    FROM @books_stage/load_date={{ load_date }}/books.csv t
 )
 ON_ERROR = 'ABORT_STATEMENT';
 
@@ -170,7 +173,7 @@ FROM (
         METADATA$FILE_ROW_NUMBER,
         $batch_id,
         CURRENT_TIMESTAMP()
-    FROM @books_stage/book_authors.csv t
+    FROM @books_stage/load_date={{ load_date }}/book_authors.csv t
 )
 ON_ERROR = 'ABORT_STATEMENT';
 
@@ -183,7 +186,7 @@ FROM (
         METADATA$FILE_ROW_NUMBER,
         $batch_id,
         CURRENT_TIMESTAMP()
-    FROM @books_stage/book_categories.csv t
+    FROM @books_stage/load_date={{ load_date }}/book_categories.csv t
 )
 ON_ERROR = 'ABORT_STATEMENT';
 
@@ -203,7 +206,7 @@ FROM (
         METADATA$FILE_ROW_NUMBER,
         $batch_id,
         CURRENT_TIMESTAMP()
-    FROM @books_stage/orders.csv t
+    FROM @books_stage/load_date={{ load_date }}/orders.csv t
 )
 ON_ERROR = 'ABORT_STATEMENT';
 
@@ -221,7 +224,7 @@ FROM (
         METADATA$FILE_ROW_NUMBER,
         $batch_id,
         CURRENT_TIMESTAMP()
-    FROM @books_stage/order_items.csv t
+    FROM @books_stage/load_date={{ load_date }}/order_items.csv t
 )
 ON_ERROR = 'ABORT_STATEMENT';
 
@@ -237,7 +240,7 @@ FROM (
         METADATA$FILE_ROW_NUMBER,
         $batch_id,
         CURRENT_TIMESTAMP()
-    FROM @books_stage/inventory.csv t
+    FROM @books_stage/load_date={{ load_date }}/inventory.csv t
 )
 
 ON_ERROR = 'ABORT_STATEMENT';
