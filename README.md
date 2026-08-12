@@ -84,5 +84,7 @@ https://localhost:8080
 Tasks 
 ![Successful Airflow pipeline](docs/images/Airflow.png)
 
-A Dag
-![Successful Airflow pipeline](docs/images/Dag.png)
+A Dag when there is new data. 
+![Successful Airflow pipeline](docs/images/Dag_success.png)
+If the folder is missing or any file loads zero rowss, pipeline stops. 
+![Successful Airflow pipeline](docs/images/Dag_failed.png)
