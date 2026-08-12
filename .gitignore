@@ -8,3 +8,7 @@ dbt_packages/
 mysecret.txt
 .vscode
 snowflake/bronze/schema.sql
+airflow/.env
+airflow/logs/
+airflow/config/
+airflow/plugins/
