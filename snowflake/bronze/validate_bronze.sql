@@ -1,38 +1,43 @@
--- check 
-SELECT 'stores' AS table_name, COUNT(*) AS row_count FROM stores
-UNION ALL
-SELECT 'staff', COUNT(*) FROM staff
-UNION ALL
-SELECT 'customers', COUNT(*) FROM customers
-UNION ALL
-SELECT 'publishers', COUNT(*) FROM publishers
-UNION ALL
-SELECT 'authors', COUNT(*) FROM authors
-UNION ALL
-SELECT 'categories', COUNT(*) FROM categories
-UNION ALL
-SELECT 'promotions', COUNT(*) FROM promotions
-UNION ALL
-SELECT 'books', COUNT(*) FROM books
-UNION ALL
-SELECT 'book_authors', COUNT(*) FROM book_authors
-UNION ALL
-SELECT 'book_categories', COUNT(*) FROM book_categories
-UNION ALL
-SELECT 'orders', COUNT(*) FROM orders
-UNION ALL
-SELECT 'order_items', COUNT(*) FROM order_items
-UNION ALL
-SELECT 'inventory', COUNT(*) FROM inventory
-ORDER BY table_name;
+WITH table_counts AS (
+    SELECT 'stores' AS table_name, COUNT(*) AS row_count
+    FROM bookstores.bronze.stores
 
---check for books table 
-SELECT
-    _source_filename,
-    _batch_id,
-    COUNT(*) AS rowss,
-    MIN(_loaded_at) AS loaded_at
-FROM books
-GROUP BY
-    _source_filename,
-    _batch_id;
+    UNION ALL
+    SELECT 'staff', COUNT(*) FROM bookstores.bronze.staff
+
+    UNION ALL
+    SELECT 'customers', COUNT(*) FROM bookstores.bronze.customers
+
+    UNION ALL
+    SELECT 'publishers', COUNT(*) FROM bookstores.bronze.publishers
+
+    UNION ALL
+    SELECT 'authors', COUNT(*) FROM bookstores.bronze.authors
+
+    UNION ALL
+    SELECT 'categories', COUNT(*) FROM bookstores.bronze.categories
+
+    UNION ALL
+    SELECT 'promotions', COUNT(*) FROM bookstores.bronze.promotions
+
+    UNION ALL
+    SELECT 'books', COUNT(*) FROM bookstores.bronze.books
+
+    UNION ALL
+    SELECT 'book_authors', COUNT(*) FROM bookstores.bronze.book_authors
+
+    UNION ALL
+    SELECT 'book_categories', COUNT(*) FROM bookstores.bronze.book_categories
+
+    UNION ALL
+    SELECT 'orders', COUNT(*) FROM bookstores.bronze.orders
+
+    UNION ALL
+    SELECT 'order_items', COUNT(*) FROM bookstores.bronze.order_items
+
+    UNION ALL
+    SELECT 'inventory', COUNT(*) FROM bookstores.bronze.inventory
+)
+
+SELECT COUNT_IF(row_count = 0) = 0 AS all_tables_have_data
+FROM table_counts;
