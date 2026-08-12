@@ -84,6 +84,7 @@ x-airflow-common:
     - ${AIRFLOW_PROJ_DIR:-.}/plugins:/opt/airflow/plugins
     - ../bookstore_analytics:/opt/airflow/bookstore_analytics:ro
     - ../snowflake:/opt/airflow/snowflake:ro
+    - ./secrets/profiles.yml:/home/airflow/.dbt/profiles.yml:ro
   user: "${AIRFLOW_UID:-50000}:0"
   depends_on:
     &airflow-common-depends-on

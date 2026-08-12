@@ -12,3 +12,7 @@ airflow/.env
 airflow/logs/
 airflow/config/
 airflow/plugins/
+airflow/secrets/
+
+__pycache__/
+*.py[cod]
