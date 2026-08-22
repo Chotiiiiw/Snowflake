@@ -40,8 +40,21 @@ cleaned as (
                 when nullif(trim(store_type), '') is null
                     then null
                 
-                when lower(trim(store_type)) = 'physical' or lower(trim(store_type)) = 'physical_store' then 'Physical'
-                else initcap(lower(store_type))
+                when lower(trim(store_type)) in (
+                    'physical',
+                    'physical store',
+                    'physical_store'
+                )
+                    then 'Physical'
+
+                when lower(trim(store_type)) in (
+                    'pop up',
+                    'pop-up',
+                    'pop_up'
+                )
+                    then 'Pop-up'
+
+                else initcap(lower(trim(store_type)))
             end as varchar(50)
         ) as store_type,
 

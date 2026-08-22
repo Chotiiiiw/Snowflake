@@ -77,12 +77,75 @@ cleaned as (
                     regexp_replace(trim(phone), '[^0-9]', ''),
                     3
                 )
+
+                -- Repair legacy values formatted with a four-digit mobile prefix,
+                -- for example 0864-309-2846 -> 0863092846.
+                when regexp_like(
+                    regexp_replace(trim(phone), '[^0-9]', ''),
+                    '^0[0-9]{10}$'
+                )
+                then substr(
+                    regexp_replace(trim(phone), '[^0-9]', ''),
+                    1,
+                    3
+                ) || substr(
+                    regexp_replace(trim(phone), '[^0-9]', ''),
+                    5
+                )
+
                 else null end
                 as varchar(10)
         ) as phone,
         
         cast(
-            nullif(trim(job_title), '') as varchar(100)
+            case
+                when nullif(trim(job_title), '') is null
+                    then null
+                when lower(trim(job_title)) in (
+                    'sales associate',
+                    'sales_associate'
+                )
+                    then 'Sales Associate'
+                when lower(trim(job_title)) in (
+                    'inventory clerk',
+                    'inventory_clerk'
+                )
+                    then 'Inventory Clerk'
+                when lower(trim(job_title)) in (
+                    'store manager',
+                    'store_manager'
+                )
+                    then 'Store Manager'
+                when lower(trim(job_title)) in (
+                    'customer service lead',
+                    'customer_service_lead'
+                )
+                    then 'Customer Service Lead'
+                when lower(trim(job_title)) in (
+                    'store supervisor',
+                    'store_supervisor'
+                )
+                    then 'Store Supervisor'
+                when lower(trim(job_title)) in (
+                    'operations specialist',
+                    'operations_specialist'
+                )
+                    then 'Operations Specialist'
+                when lower(trim(job_title)) in (
+                    'merchandising associate',
+                    'merchandising_associate'
+                )
+                    then 'Merchandising Associate'
+                when lower(trim(job_title)) in (
+                    'part-time',
+                    'part time',
+                    'part_time'
+                )
+                    then 'Part-time'
+                when lower(trim(job_title)) = 'cashier'
+                    then 'Cashier'
+                else initcap(lower(trim(job_title)))
+            end as varchar(100)
         ) as job_title,
 
         cast(

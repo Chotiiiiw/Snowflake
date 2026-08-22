@@ -98,13 +98,8 @@ cleaned as (
         as varchar(100) 
         ) as city,
 
-        cast (
-            case 
-                when nullif(trim(country), '') is null then null 
-                when lower(trim(country)) = 'thailand' or lower(trim(country)) = 'th' or lower(trim(country)) = 'ไทย' then 'Thailand'
-                else initcap(lower(trim(country)))
-            end 
-        as varchar(100)
+        cast(
+            {{ normalize_country('country') }} as varchar(100)
         ) as country,
 
         try_cast(
