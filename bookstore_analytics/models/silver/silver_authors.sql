@@ -31,12 +31,7 @@ cleaned as (
             initcap(lower(trim(author_name))) as varchar(255)
         ) as author_name, 
         cast(
-            case 
-                when trim(lower(country)) is null then null
-                when trim(lower(country)) in ('th', 'thailand', 'ไทย') then 'Thailand'
-                when trim(lower(country)) in ('united states', 'usa') then 'United States'
-                when trim(lower(country)) in ('united kingdom', 'uk') then 'United Kingdom'
-                else initcap(trim(lower(country))) end as varchar(100)
+            {{ normalize_country('country') }} as varchar(100)
         ) as country,
         try_cast(
             nullif(trim(created_at), '') as timestamp_ntz

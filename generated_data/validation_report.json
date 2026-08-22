@@ -1,0 +1,86 @@
+{
+  "seed": "0x5eed1234",
+  "sourceDir": "/Users/chotiwatbanjongpru/Downloads",
+  "dates": {
+    "2026-08-18": {
+      "authors": 303,
+      "book_authors": 1680,
+      "book_categories": 1761,
+      "books": 1510,
+      "categories": 10,
+      "customers": 15100,
+      "inventory": 8592,
+      "order_items": 75581,
+      "orders": 30200,
+      "promotions": 9,
+      "publishers": 10,
+      "staff": 122,
+      "stores": 10
+    },
+    "2026-08-19": {
+      "authors": 306,
+      "book_authors": 1694,
+      "book_categories": 1771,
+      "books": 1520,
+      "categories": 10,
+      "customers": 15200,
+      "inventory": 8884,
+      "order_items": 76281,
+      "orders": 30400,
+      "promotions": 9,
+      "publishers": 11,
+      "staff": 124,
+      "stores": 10
+    },
+    "2026-08-20": {
+      "authors": 309,
+      "book_authors": 1708,
+      "book_categories": 1781,
+      "books": 1530,
+      "categories": 11,
+      "customers": 15300,
+      "inventory": 9090,
+      "order_items": 76981,
+      "orders": 30600,
+      "promotions": 10,
+      "publishers": 11,
+      "staff": 126,
+      "stores": 10
+    },
+    "2026-08-21": {
+      "authors": 312,
+      "book_authors": 1722,
+      "book_categories": 1791,
+      "books": 1540,
+      "categories": 11,
+      "customers": 15400,
+      "inventory": 9402,
+      "order_items": 77681,
+      "orders": 30800,
+      "promotions": 10,
+      "publishers": 12,
+      "staff": 128,
+      "stores": 10
+    },
+    "2026-08-22": {
+      "authors": 315,
+      "book_authors": 1736,
+      "book_categories": 1801,
+      "books": 1550,
+      "categories": 12,
+      "customers": 15500,
+      "inventory": 9716,
+      "order_items": 78381,
+      "orders": 31000,
+      "promotions": 11,
+      "publishers": 12,
+      "staff": 130,
+      "stores": 10
+    }
+  },
+  "constraints": {
+    "asciiOnly": true,
+    "noBrokenForeignKeys": true,
+    "cumulativeDailySnapshots": true
+  }
+}

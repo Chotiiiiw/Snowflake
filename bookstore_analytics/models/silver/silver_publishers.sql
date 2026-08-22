@@ -28,32 +28,7 @@ cleaned as (
             nullif(trim(publisher_name), '') as varchar(255)
         ) as publisher_name,
         cast(
-            case
-                when nullif(trim(country), '') is null
-                    then null
-
-                when lower(trim(country)) in (
-                    'thailand',
-                    'ไทย',
-                    'th'
-                )
-                    then 'Thailand'
-
-                when lower(trim(country)) in (
-                    'united kingdom',
-                    'uk'
-                )
-                    then 'United Kingdom'
-
-                when lower(trim(country)) in (
-                    'united states',
-                    'usa',
-                    'us'
-                )
-                    then 'United States'
-
-                else initcap(lower(trim(country)))
-            end as varchar(100)
+            {{ normalize_country('country') }} as varchar(100)
         ) as country,
         try_cast(
             nullif(trim(created_at), '') as timestamp_ntz
